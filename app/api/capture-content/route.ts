@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import chromium from '@sparticuz/chromium'
 import puppeteer from 'puppeteer'
+import puppeteerCore from 'puppeteer-core'
 
 const RATE_LIMIT = 5 // requests
 const RATE_LIMIT_WINDOW = 60 * 1000 // 1 minute in milliseconds
@@ -39,14 +41,11 @@ export async function GET(req: NextRequest) {
       `puppeteer/internal/node/install.js`
     ).downloadBrowsers()
     await install
-    const browser = await puppeteer.launch({
-      args: [
-        '--use-gl=angle',
-        '--use-angle=swiftshader',
-        '--single-process',
-        '--no-sandbox',
-      ],
-      headless: true,
+    const browser = await puppeteerCore.launch({
+      args: chromium.args,
+      defaultViewport: chromium.defaultViewport,
+      executablePath: await chromium.executablePath(),
+      headless: chromium.headless,
     })
     const page = await browser.newPage()
     await page.goto(url, {
