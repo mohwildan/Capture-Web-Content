@@ -1,4 +1,9 @@
+const withTM = require('next-transpile-modules')(['rfv'])
 /** @type {import('next').NextConfig} */
-const nextConfig = {}
+const nextConfig = {
+  experimental: {
+    serverComponentsExternalPackages: ['puppeteer-core', '@sparticuz/chromium'],
+  },
+}
 
-module.exports = nextConfig
+module.exports = withTM(nextConfig)

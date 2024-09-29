@@ -1,5 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
+import chromium from '@sparticuz/chromium'
 import puppeteer from 'puppeteer'
+import puppeteerCore from 'puppeteer-core'
 
 const RATE_LIMIT = 5 // requests
 const RATE_LIMIT_WINDOW = 60 * 1000 // 1 minute in milliseconds
@@ -19,6 +21,20 @@ export async function GET(req: NextRequest) {
     if (!url) {
       return NextResponse.json({ error: 'URL is required' })
     }
+    let browser
+    if (process.env.VERCEL_ENV === 'production') {
+      const executablePath = await chromium.executablePath()
+      browser = await puppeteerCore.launch({
+        executablePath,
+        args: chromium.args,
+        headless: chromium.headless,
+        defaultViewport: chromium.defaultViewport,
+      })
+    } else {
+      browser = await puppeteer.launch({
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+      })
+    }
 
     // Rate limiting
     const now = Date.now()
@@ -36,9 +52,6 @@ export async function GET(req: NextRequest) {
       `IP: ${clientIp} - Requests in window: ${requestsInWindow.length}`
     )
 
-    const browser = await puppeteer.launch({
-      args: ['--no-sandbox', '--disable-setuid-sandbox'],
-    })
     const page = await browser.newPage()
     await page.goto(url, {
       waitUntil: 'networkidle0',
