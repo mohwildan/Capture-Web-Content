@@ -35,8 +35,10 @@ export async function GET(req: NextRequest) {
     console.log(
       `IP: ${clientIp} - Requests in window: ${requestsInWindow.length}`
     )
-    const install = require(`puppeteer/internal/node/install.js`)
-    await install?.downloadBrowsers()
+    const install = require(
+      `puppeteer/internal/node/install.js`
+    ).downloadBrowsers()
+    await install
     const browser = await puppeteer.launch({
       args: [
         '--use-gl=angle',
