@@ -239,8 +239,8 @@ const FullscreenCaptureApp = () => {
           )}
         </CardContent>
         <CardFooter className='text-center text-sm text-gray-500'>
-          Enter a URL, adjust options if needed, and click 'Capture' to capture
-          the website content.
+          Enter a URL, adjust options if needed, and click &apos;Capture&apos;
+          to capture the website content.
         </CardFooter>
       </Card>
     </div>
